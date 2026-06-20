@@ -1,49 +1,88 @@
-# Teldrive
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/tgdrive/teldrive)
+# TelDrive Improved
 
-Teldrive is a powerful utility that enables you to organise your telegram files and much more.
+A production-ready, improved version of TelDrive with clean architecture, better performance, and enhanced maintainability.
 
-## Advantages Over Alternative Solutions
+## Features
 
-- **Exceptional Speed:** Teldrive stands out among similar tools, thanks to its implementation in Go, a language known for its efficiency. Its performance surpasses alternatives written in Python and other languages, with the exception of Rust.
+- Clean Architecture with internal/pkg separation
+- Unified Cache Interface (Memory and Redis backends)
+- Structured Logging with rotation
+- Graceful Shutdown with context-based lifecycle
+- JWT Authentication with middleware
+- CORS Support
+- Health Checks with metrics
+- Database Migrations
+- Docker Multi-stage builds
+- CI/CD Ready with GitHub Actions
 
-- **Enhanced Management Capabilities:** Teldrive not only excels in speed but also offers an intuitive user interface for efficient file interaction which other tool lacks. Its compatibility with Rclone further enhances file management.
+## Quick Start
 
-> [!IMPORTANT]
-> Teldrive functions as a wrapper over your Telegram account, simplifying file access. However, users must adhere to the limitations imposed by the Telegram API. Teldrive is not responsible for any consequences arising from non-compliance with these API limits.You will be banned instantly if you misuse telegram API.
+```bash
+# Clone and build
+git clone https://github.com/tgdrive/teldrive-improved.git
+cd teldrive-improved
+make build
 
-Visit https://teldrive-docs.pages.dev for setting up teldrive.
+# Run with config
+./bin/teldrive run --config config.toml
 
-# Recognitions
+# Or with Docker
+docker-compose -f docker/docker-compose.yml up -d
+```
 
-<a href="https://trendshift.io/repositories/7568" target="_blank"><img src="https://trendshift.io/api/badge/repositories/7568" alt="divyam234%2Fteldrive | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+## Configuration
 
-## Best Practices for Using Teldrive
+Create `config.toml`:
 
-### Dos:
+```toml
+[server]
+host = "0.0.0.0"
+port = 8080
 
-- **Follow Limits:** Adhere to the limits imposed by Telegram servers to avoid account bans and automatic deletion of your channel.Your files will be removed from telegram servers if you try to abuse the service as most people have zero brains they will still do so good luck.
-- **Responsible Storage:** Be mindful of the content you store on Telegram. Utilize storage efficiently and only keep data that serves a purpose.
-  
-### Don'ts:
-- **Data Hoarding:** Avoid excessive data hoarding, as it not only violates Telegram's terms.
-  
-By following these guidelines, you contribute to the responsible and effective use of Telegram, maintaining a fair and equitable environment for all users.
+[log]
+level = "info"
+format = "json"
 
-## Contributing
+[db]
+host = "localhost"
+port = 5432
+user = "postgres"
+password = "postgres"
+name = "teldrive"
 
-Feel free to contribute to this project.See [CONTRIBUTING.md](CONTRIBUTING.md) for more information.
+[tg]
+app-id = 12345
+app-hash = "your-app-hash"
+phone = "+1234567890"
 
-## Donate
+[jwt]
+secret = "your-secret-key"
+session-time = "720h"
+```
 
-If you like this project small contribution would be appreciated [Paypal](https://paypal.me/redux234).
+## API Endpoints
 
-## Star History
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/health` | Health check |
+| POST | `/auth/login` | Login |
+| GET | `/files` | List files |
+| POST | `/files` | Create file |
+| GET | `/files/{id}` | Get file |
+| DELETE | `/files/{id}` | Delete file |
+| POST | `/uploads` | Start upload |
+| POST | `/uploads/{id}/chunk` | Upload chunk |
+| POST | `/uploads/{id}/complete` | Complete upload |
 
-<a href="https://www.star-history.com/#tgdrive/teldrive&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=tgdrive/teldrive&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=tgdrive/teldrive&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=tgdrive/teldrive&type=Date" />
- </picture>
-</a>
+## Architecture
+
+```
+HTTP API -> Services -> Repositories -> Database
+    |          |            |
+Middleware  Telegram     Cache
+            Client
+```
+
+## License
+
+MIT License
