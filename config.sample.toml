@@ -1,84 +1,82 @@
-[cache]
-max-size = 10485760
-redis-addr = ''
-redis-pass = ''
+[server]
+host = "0.0.0.0"
+port = 8080
+auto-port = false
+read-timeout = "30s"
+write-timeout = "30s"
+idle-timeout = "120s"
 
-[cronjobs]
-clean-files-interval = '1h'
-clean-uploads-interval = '12h'
-enable = true
-folder-size-interval = '2h'
-locker-instance = 'cron-locker'
-
-[db]
-data-source = ''
-log-level = 'info'
-prepare-stmt = true
-
-[db.pool]
-enable = true
-max-idle-connections = 25
-max-lifetime = '10m'
-max-open-connections = 25
-
-[jwt]
-session-time = '30d'
-secret = ''
-allowed-users = []
+[server.cors]
+enabled = true
+allowed-origins = ["*"]
+allowed-methods = ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"]
+allowed-headers = ["*"]
+allow-credentials = true
+max-age = "24h"
 
 [log]
-file = ''
-level = 'info'
+level = "info"
+format = "json"
+output = "stdout"
+max-size = 100
+max-backups = 5
+max-age = 30
+compress = true
 
-[server]
-enable-pprof = false
-graceful-shutdown = '10s'
-port = 8080
-read-timeout = '1h'
-write-timeout = '1h'
+[jwt]
+secret = ""
+session-time = "720h"
+allowed-users = []
+
+[db]
+host = "localhost"
+port = 5432
+user = "postgres"
+password = "postgres"
+name = "teldrive"
+ssl-mode = "disable"
+
+[db.pool]
+max-open = 25
+max-idle = 5
+max-lifetime = "1h"
+max-idle-time = "30m"
 
 [tg]
-app-hash = '8da85b0d5bfe62527e5b244c209159c3'
-app-id = 2496
-app-version = '6.1.4 K'
-auto-channel-create = true
-channel-limit = 500000
-device-model = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/116.0'
-enable-logging = false
-lang-code = 'en'
-lang-pack = 'webk'
-ntp = false
-pool-size = 8
-proxy = ''
-rate = 100
-rate-burst = 5
-rate-limit = true
-reconnect-timeout = '5m'
-session-instance = 'teldrive'
-system-lang-code = 'en-US'
-system-version = 'Win32'
+app-id = 0
+app-hash = ""
+phone = ""
+password = ""
+session-dir = "./sessions"
+workers = 4
+multi-bots = []
+upload-pool-size = 50
+download-pool-size = 50
 
-[tg.session]
-# Session storage type: postgres, bolt, or memory
-type = 'postgres'
-# Key prefix for session storage
-key = 'session'
+[tg.proxy]
+enabled = false
+url = ""
+username = ""
+password = ""
 
-[tg.session.bolt]
-# Path to BoltDB file (empty = auto-detect ~/.teldrive/session.db)
-path = ''
-# Timeout for opening BoltDB
-timeout = '1s'
-# Disable grow sync for performance
-no-grow-sync = false
+[cron-jobs]
+enabled = true
+cleanup-interval = "24h"
+stats-interval = "1h"
 
-[tg.stream]
-buffers = 8
-chunk-timeout = '20s'
-concurrency = 1
+[cache]
+type = "memory"
+ttl = "5m"
+max-size = 10000
 
-[tg.uploads]
-encryption-key = ''
-max-retries = 10
-retention = '7d'
-threads = 8
+[redis]
+enabled = false
+address = "localhost:6379"
+password = ""
+db = 0
+
+[events]
+poll-interval = "10s"
+db-workers = 10
+db-buffer-size = 1000
+deduplication-ttl = "5s"
