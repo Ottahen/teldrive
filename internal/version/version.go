@@ -1,22 +1,28 @@
 package version
 
-import (
-	"runtime"
+import "sync"
 
-	"github.com/tgdrive/teldrive/internal/api"
-)
+type Info struct {
+	Version   string
+	Commit    string
+	BuildTime string
+}
 
 var (
-	Version   = "development"
-	CommitSHA = "unknown"
+	info Info
+	once sync.Once
 )
 
-func GetVersionInfo() *api.ApiVersion {
-	return &api.ApiVersion{
-		Version:   Version,
-		CommitSHA: CommitSHA,
-		GoVersion: runtime.Version(),
-		Os:        runtime.GOOS,
-		Arch:      runtime.GOARCH,
-	}
+func Set(version, commit, buildTime string) {
+	once.Do(func() {
+		info = Info{
+			Version:   version,
+			Commit:    commit,
+			BuildTime: buildTime,
+		}
+	})
+}
+
+func Get() Info {
+	return info
 }
